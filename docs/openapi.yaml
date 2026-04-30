@@ -1,0 +1,502 @@
+openapi: 3.1.0
+info:
+  title: AI Work Doc Local API
+  version: 0.1.0
+  description: |
+    Local HTTP API for AI Work Doc — a local-first Markdown workspace.
+    All endpoints operate within the configured `rootPath` directory.
+    Path traversal is blocked. Only `.md` and `.markdown` files are served.
+servers:
+  - url: http://127.0.0.1:3001
+    description: Default local server
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/workspace:
+    get:
+      summary: Get workspace configuration
+      operationId: getWorkspace
+      responses:
+        '200':
+          description: Current workspace configuration
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkspaceConfig'
+    post:
+      summary: Update workspace configuration
+      operationId: updateWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rootPath:
+                  type: string
+                  description: Absolute path to the workspace root directory
+                port:
+                  type: number
+                  description: Server port (requires restart)
+                autoSave:
+                  type: boolean
+                readOnly:
+                  type: boolean
+                theme:
+                  type: string
+                  enum: [light, dark, system]
+      responses:
+        '200':
+          description: Updated workspace configuration
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/WorkspaceConfig'
+
+  /api/tree:
+    get:
+      summary: Get Markdown file tree
+      operationId: getTree
+      responses:
+        '200':
+          description: File tree rooted at the workspace rootPath
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          rootPath:
+                            type: string
+                          nodes:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FileNode'
+
+  /api/file:
+    get:
+      summary: Read a Markdown file
+      operationId: readFile
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Relative file path within the workspace
+      responses:
+        '200':
+          description: File content and metadata
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DocumentFile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+    post:
+      summary: Create a new Markdown file
+      operationId: createFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path]
+              properties:
+                path:
+                  type: string
+                  description: Relative path for the new file
+                content:
+                  type: string
+                  description: Initial file content (default: empty)
+      responses:
+        '200':
+          description: File created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/DocumentFile'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/ReadOnly'
+    put:
+      summary: Save content to a Markdown file
+      operationId: saveFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path, content]
+              properties:
+                path:
+                  type: string
+                content:
+                  type: string
+      responses:
+        '200':
+          description: File saved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          path:
+                            type: string
+                          saved:
+                            type: boolean
+                          updatedAt:
+                            type: string
+                            format: date-time
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/ReadOnly'
+    delete:
+      summary: Delete a Markdown file
+      operationId: deleteFile
+      parameters:
+        - name: path
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Relative file path to delete
+      responses:
+        '200':
+          description: File deleted successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          path:
+                            type: string
+                          deleted:
+                            type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/ReadOnly'
+
+  /api/file/rename:
+    post:
+      summary: Rename or move a Markdown file
+      operationId: renameFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [fromPath, toPath]
+              properties:
+                fromPath:
+                  type: string
+                toPath:
+                  type: string
+      responses:
+        '200':
+          description: File renamed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          fromPath:
+                            type: string
+                          toPath:
+                            type: string
+                          renamed:
+                            type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/ReadOnly'
+
+  /api/recent:
+    get:
+      summary: Get recently opened files
+      operationId: getRecent
+      responses:
+        '200':
+          description: List of recently opened file paths
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          recentFiles:
+                            type: array
+                            items:
+                              type: string
+    post:
+      summary: Add a file to recent list
+      operationId: addRecent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [path]
+              properties:
+                path:
+                  type: string
+      responses:
+        '200':
+          description: Updated recent files list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          recentFiles:
+                            type: array
+                            items:
+                              type: string
+
+  /api/search:
+    get:
+      summary: Search files by name
+      operationId: searchFiles
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query (case-insensitive filename match)
+      responses:
+        '200':
+          description: Matching files
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          results:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/FileNode'
+
+  /api/docs:
+    get:
+      summary: OpenAPI specification (YAML)
+      operationId: getDocs
+      responses:
+        '200':
+          description: OpenAPI YAML specification
+          content:
+            text/yaml:
+              schema:
+                type: string
+
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code (0 = success, non-zero = error)
+        message:
+          type: string
+          description: Human-readable message
+        data:
+          description: Response payload
+        requestId:
+          type: string
+          description: Unique request identifier
+
+    HealthResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                status:
+                  type: string
+                  example: healthy
+
+    WorkspaceConfig:
+      type: object
+      properties:
+        rootPath:
+          type: string
+          description: Absolute path to workspace root
+        port:
+          type: integer
+          description: Server port
+        autoSave:
+          type: boolean
+        readOnly:
+          type: boolean
+        recentFiles:
+          type: array
+          items:
+            type: string
+        theme:
+          type: string
+          enum: [light, dark, system]
+
+    FileNode:
+      type: object
+      properties:
+        name:
+          type: string
+        path:
+          type: string
+          description: Relative path from workspace root
+        absolutePath:
+          type: string
+          description: Absolute file system path
+        type:
+          type: string
+          enum: [file, directory]
+        ext:
+          type: string
+          description: File extension (file nodes only)
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileNode'
+
+    DocumentFile:
+      type: object
+      properties:
+        path:
+          type: string
+        name:
+          type: string
+        content:
+          type: string
+          description: UTF-8 file content
+        encoding:
+          type: string
+          example: utf-8
+        updatedAt:
+          type: string
+          format: date-time
+        size:
+          type: integer
+          description: File size in bytes
+
+    ErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            data:
+              nullable: true
+              example: null
+
+  responses:
+    BadRequest:
+      description: Bad request or operation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            pathEscape:
+              value:
+                code: 4001
+                message: path is outside root workspace
+                data: null
+            fileNotFound:
+              value:
+                code: 4002
+                message: file not found
+                data: null
+            unsupportedType:
+              value:
+                code: 4003
+                message: unsupported file type
+                data: null
+            invalidConfig:
+              value:
+                code: 4004
+                message: config invalid
+                data: null
+    ReadOnly:
+      description: Workspace is in read-only mode
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            value:
+              code: 4005
+              message: workspace is in read-only mode
+              data: null

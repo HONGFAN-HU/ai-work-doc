@@ -1,0 +1,14 @@
+{
+    "name":  "@ai-work-doc/shared",
+    "private":  true,
+    "version":  "0.1.0",
+    "type":  "module",
+    "main":  "src/index.ts",
+    "scripts":  {
+                    "build":  "tsc -p tsconfig.json",
+                    "typecheck":  "tsc --noEmit"
+                },
+    "devDependencies":  {
+                            "typescript":  "^5.5.4"
+                        }
+}

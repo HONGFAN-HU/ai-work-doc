@@ -1,0 +1,13 @@
+{
+  "name": "ai-work-doc",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@8.15.0",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @ai-work-doc/server dev --filter @ai-work-doc/web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter @ai-work-doc/server start",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  }
+}
