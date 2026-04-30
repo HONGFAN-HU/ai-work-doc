@@ -4,17 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A local Markdown document workspace with a web UI and HTTP API, built as a pnpm monorepo.
+A local Markdown document workspace with a web UI and HTTP API, built as an npm monorepo.
 
 ## Commands
 
 ```bash
-pnpm install              # Install all dependencies
-pnpm dev                  # Run server (port 3001) + web (port 3000) in parallel
-pnpm build                # Build all packages
-pnpm start                # Start production server
-pnpm lint                 # ESLint across all packages
-pnpm typecheck            # tsc --noEmit across all packages
+npm install               # Install all dependencies
+npm run dev               # Run server (port 3001) + web (port 3000) in parallel
+npm run build             # Build all packages
+npm run start             # Start production server
+npm run lint              # ESLint across all packages
+npm run typecheck         # tsc --noEmit across all packages
 ```
 
 ## Architecture

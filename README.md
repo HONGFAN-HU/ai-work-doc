@@ -17,15 +17,15 @@ A local-first Markdown document workspace and HTTP API layer. Browse, edit, and 
 ## Prerequisites
 
 - Node.js 20+ (LTS recommended)
-- pnpm 8+
+- npm 10+ (bundled with Node.js)
 
 ## Quick Start
 
 ```bash
 git clone https://github.com/HONGFAN-HU/ai-work-doc.git
 cd ai-work-doc
-pnpm install
-pnpm dev
+npm install
+npm run dev
 ```
 
 Open `http://127.0.0.1:3000` in your browser.
@@ -84,11 +84,11 @@ For the full API specification, see `docs/openapi.yaml` or visit `http://127.0.0
 
 | Command | Description |
 |---------|-------------|
-| `pnpm dev` | Start dev server (frontend :3000 + API :3001) |
-| `pnpm build` | Build all packages for production |
-| `pnpm start` | Start production server |
-| `pnpm lint` | Run ESLint |
-| `pnpm typecheck` | Run TypeScript type checking |
+| `npm run dev` | Start dev server (frontend :3000 + API :3001) |
+| `npm run build` | Build all packages for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Run TypeScript type checking |
 
 ## Architecture
 
@@ -102,7 +102,7 @@ docs/            OpenAPI specification and development docs
 ## Troubleshooting
 
 **"Cannot connect to server"**
-Ensure the server is running on port 3001. Run `pnpm dev` to start both services.
+Ensure the server is running on port 3001. Run `npm run dev` to start both services.
 
 **"Path is outside root workspace"**
 The requested file path escapes the configured root directory. Check that your root path and file paths are correct.

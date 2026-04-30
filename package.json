@@ -2,12 +2,21 @@
   "name": "ai-work-doc",
   "private": true,
   "version": "0.1.0",
-  "packageManager": "pnpm@8.15.0",
+  "packageManager": "npm@10.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "pnpm --parallel --filter @ai-work-doc/server dev --filter @ai-work-doc/web dev",
-    "build": "pnpm -r build",
-    "start": "pnpm --filter @ai-work-doc/server start",
-    "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck"
+    "dev": "npm-run-all --parallel dev:server dev:web",
+    "dev:server": "npm --workspace=@ai-work-doc/server run dev",
+    "dev:web": "npm --workspace=@ai-work-doc/web run dev",
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspace=@ai-work-doc/server",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }
