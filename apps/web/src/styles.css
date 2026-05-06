@@ -365,61 +365,8 @@ body,
   display: flex;
   flex-direction: column;
   background: #fff;
-  border-radius: 6px;
-  border: 1px solid var(--td-gray-divider);
   overflow: hidden;
   isolation: isolate;
-}
-
-/* Editor toolbar - Edit/Preview tabs */
-.editor-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--td-gray-divider);
-  flex-shrink: 0;
-  gap: 8px;
-}
-
-.editor-toolbar-tabs {
-  display: flex;
-  gap: 4px;
-}
-
-.editor-toolbar-tab {
-  padding: 4px 12px;
-  border-radius: 3px;
-  font-size: 13px;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  color: rgba(0, 0, 0, 0.6);
-  transition: background-color 0.15s, color 0.15s;
-}
-
-.editor-toolbar-tab:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.editor-toolbar-tab.active {
-  background: #e6f4ff;
-  color: var(--td-brand-color);
-}
-
-.editor-toolbar-actions {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.editor-path {
-  font-size: var(--td-font-size-body-small);
-  color: var(--td-text-placeholder);
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* ---- Editor Textarea ---- */
@@ -612,7 +559,7 @@ body,
   background: var(--content-code-bg);
 }
 
-/* ---- Outline Panel (matching Figma Anchor 锚点) ---- */
+/* ---- Outline Panel ---- */
 .outline-panel {
   width: 320px;
   flex-shrink: 0;
@@ -631,81 +578,10 @@ body,
   flex-direction: column;
 }
 
-/* Anchor item - matching Figma ItemUnitAchor */
-.outline-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding-right: 16px;
-  cursor: pointer;
-  position: relative;
-  width: 320px;
-  flex-shrink: 0;
-}
-
-.outline-item.outline-sub {
-  gap: 31px; /* 16px indent + 15px gap */
-}
-
-.outline-item:hover .outline-item-text {
-  color: var(--td-brand-color);
-}
-
-/* Line connector - matching Figma line */
-.outline-item-line {
-  display: flex;
-  align-items: flex-start;
-  flex-shrink: 0;
-  align-self: stretch;
-  background: var(--td-gray-divider);
-}
-
-.outline-item-line-inner {
-  padding: 4px 0;
-}
-
-.outline-item-line-bar {
-  width: 1px;
-  height: 16px;
-  background: var(--td-gray-divider);
-}
-
-.outline-item-line-fix {
-  height: 24px;
-  width: 0;
-}
-
-/* Content area of anchor item */
-.outline-item-content {
-  flex: 1;
-  min-width: 0;
-  padding: 2px 0;
-  overflow: hidden;
-}
-
-.outline-item-text {
-  font-family: var(--td-font-family);
-  font-size: var(--td-font-size-body-small);
-  font-weight: var(--td-font-weight-regular);
-  line-height: var(--td-line-height-body-small);
-  color: var(--td-text-primary);
-  white-space: nowrap;
+.outline-content .t-anchor__item-link {
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
-}
-
-/* Active anchor item - matching Figma select 选中 */
-.outline-item.active .outline-item-text {
-  color: var(--td-brand-color);
-}
-
-.outline-item.active .outline-item-line {
-  background: var(--td-brand-color);
-}
-
-.outline-item.active .outline-item-line-bar {
-  background: var(--td-brand-color);
+  white-space: nowrap;
 }
 
 /* Empty state */
@@ -850,28 +726,6 @@ body,
 
 [data-theme='dark'] .editor-panel {
   background: #16213e;
-  border-color: #0f3460;
-}
-
-[data-theme='dark'] .editor-toolbar {
-  border-color: #0f3460;
-}
-
-[data-theme='dark'] .editor-toolbar-tab {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-[data-theme='dark'] .editor-toolbar-tab:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-[data-theme='dark'] .editor-toolbar-tab.active {
-  background: #1a3a6b;
-  color: #64b5f6;
-}
-
-[data-theme='dark'] .editor-path {
-  color: rgba(255, 255, 255, 0.35);
 }
 
 [data-theme='dark'] .editor {
@@ -940,30 +794,6 @@ body,
 
 [data-theme='dark'] .breadcrumb-item.current {
   color: #e0e0e0;
-}
-
-[data-theme='dark'] .outline-item-text {
-  color: #e0e0e0;
-}
-
-[data-theme='dark'] .outline-item-line {
-  background: #0f3460;
-}
-
-[data-theme='dark'] .outline-item-line-bar {
-  background: #0f3460;
-}
-
-[data-theme='dark'] .outline-item.active .outline-item-text {
-  color: #64b5f6;
-}
-
-[data-theme='dark'] .outline-item.active .outline-item-line {
-  background: #64b5f6;
-}
-
-[data-theme='dark'] .outline-item.active .outline-item-line-bar {
-  background: #64b5f6;
 }
 
 [data-theme='dark'] .outline-empty {

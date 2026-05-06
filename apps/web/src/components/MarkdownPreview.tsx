@@ -24,6 +24,18 @@ const components: Components = {
     const text = String(children);
     return <h3 id={headingId(text)} {...props}>{children}</h3>;
   },
+  h4: ({ children, ...props }) => {
+    const text = String(children);
+    return <h4 id={headingId(text)} {...props}>{children}</h4>;
+  },
+  h5: ({ children, ...props }) => {
+    const text = String(children);
+    return <h5 id={headingId(text)} {...props}>{children}</h5>;
+  },
+  h6: ({ children, ...props }) => {
+    const text = String(children);
+    return <h6 id={headingId(text)} {...props}>{children}</h6>;
+  },
 };
 
 export function MarkdownPreview({ content }: MarkdownPreviewProps) {

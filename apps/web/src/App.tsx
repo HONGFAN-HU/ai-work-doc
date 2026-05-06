@@ -181,15 +181,6 @@ function App() {
 
           <div className="editor-area">
             <div className="editor-panel">
-              {currentPath && (
-                <div className="editor-toolbar">
-                  <div className="editor-toolbar-actions">
-                    <span className="editor-path" title={currentPath}>
-                      {currentPath}
-                    </span>
-                  </div>
-                </div>
-              )}
               <MarkdownPreview content={content} />
             </div>
 
