@@ -29,13 +29,15 @@ const components: Components = {
 export function MarkdownPreview({ content }: MarkdownPreviewProps) {
   return (
     <div className="markdown-preview">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
-        components={components}
-      >
-        {content}
-      </ReactMarkdown>
+      <div className="markdown-preview-content">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight]}
+          components={components}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
     </div>
   );
 }

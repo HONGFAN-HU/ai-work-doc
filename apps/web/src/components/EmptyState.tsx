@@ -11,7 +11,7 @@ export function EmptyState({ onConfigure }: EmptyStateProps) {
   return (
     <div className="empty-state">
       <Card>
-        <h2>Welcome to AI Work Doc</h2>
+        <h2>Welcome to Decen</h2>
         <p>Set your workspace root directory to browse and edit local Markdown files.</p>
         <div style={{ display: 'flex', gap: 8, marginTop: 16, maxWidth: 480 }}>
           <Input

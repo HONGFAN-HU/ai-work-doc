@@ -29,7 +29,8 @@
       "mcp__plugin_figma_figma__get_screenshot",
       "mcp__plugin_figma_figma__whoami",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
-      "mcp__plugin_figma_figma__generate_figma_design"
+      "mcp__plugin_figma_figma__generate_figma_design",
+      "Bash(node -e \"const t = require\\('tdesign-react'\\); console.log\\('Breadcrumb' in t ? 'yes' : 'no'\\)\")"
     ]
   }
 }

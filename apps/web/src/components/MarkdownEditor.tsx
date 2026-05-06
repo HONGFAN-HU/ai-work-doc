@@ -20,14 +20,18 @@ export function MarkdownEditor({
   }, [onSave]);
 
   return (
-    <textarea
-      className="editor"
-      value={content}
-      onChange={(e) => onChange(e.target.value)}
-      onKeyDown={handleKeyDown}
-      placeholder={currentPath ? 'Markdown content' : 'Open a file to edit'}
-      disabled={readOnly || disabled}
-      readOnly={readOnly}
-    />
+    <div className="editor-scroll">
+      <div className="editor-content">
+        <textarea
+          className="editor"
+          value={content}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder={currentPath ? 'Markdown content' : 'Open a file to edit'}
+          disabled={readOnly || disabled}
+          readOnly={readOnly}
+        />
+      </div>
+    </div>
   );
 }

@@ -1,5 +1,6 @@
-import { Button, Dialog, DialogPlugin, Input, Space, Tag } from 'tdesign-react';
-import { useCallback, useEffect, useState } from 'react';
+import { Button, Dialog, DialogPlugin, Input, Tag, Breadcrumb } from 'tdesign-react';
+import type { TdBreadcrumbItemProps } from 'tdesign-react/es/breadcrumb/type';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { WorkspaceConfig } from '@ai-work-doc/shared';
 import { useWorkspace } from './hooks/useWorkspace';
 import { useFileTree } from './hooks/useFileTree';
@@ -9,10 +10,9 @@ import { FileTree } from './components/FileTree';
 import { MarkdownEditor } from './components/MarkdownEditor';
 import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
-import { StatusBar } from './components/StatusBar';
-import { SettingsDialog } from './components/SettingsDialog';
 import { EmptyState } from './components/EmptyState';
 import { ErrorState } from './components/ErrorState';
+import { SettingsDialog } from './components/SettingsDialog';
 
 function App() {
   const { workspace, loading, error, saveWorkspace, fetchWorkspace } = useWorkspace();
@@ -146,9 +146,19 @@ function App() {
     setActiveTab('edit');
   }, [openFile]);
 
-  const breadcrumbParts = currentPath
-    ? currentPath.replace(workspace?.rootPath || '', '').replace(/^\//, '').split('/')
-    : [];
+  const breadcrumbOptions: TdBreadcrumbItemProps[] = useMemo(() => {
+    if (!currentPath || !workspace?.rootPath) return [];
+    const relativePath = currentPath.replace(workspace.rootPath, '').replace(/^\//, '');
+    const parts = relativePath ? relativePath.split('/') : [];
+    const items: TdBreadcrumbItemProps[] = [{ content: 'Home', href: '#' }];
+    parts.forEach((part, i) => {
+      items.push({
+        content: part,
+        href: i === parts.length - 1 ? undefined : '#',
+      });
+    });
+    return items;
+  }, [currentPath, workspace?.rootPath]);
 
   if (error) {
     return <ErrorState message={error} onRetry={fetchWorkspace} />;
@@ -164,29 +174,6 @@ function App() {
 
   return (
     <div className="app-shell">
-      <header className="header">
-        <div className="header-left">
-          <strong>AI Work Doc</strong>
-          {workspace.rootPath && (
-            <span className="header-root" title={workspace.rootPath}>
-              {workspace.rootPath}
-            </span>
-          )}
-          {isDirty() && (
-            <Tag theme="warning" variant="light" size="small">
-              Unsaved
-            </Tag>
-          )}
-        </div>
-        <Space>
-          {currentPath && (
-            <Button theme="primary" onClick={handleManualSave} disabled={workspace.readOnly}>
-              Save (Ctrl+S)
-            </Button>
-          )}
-        </Space>
-      </header>
-
       <div className="main-layout">
         <aside className="sidebar">
           <FileTree
@@ -207,27 +194,13 @@ function App() {
           />
         </aside>
 
-        <div className="main-divider" style={{ width: 1, alignSelf: 'stretch', background: '#e7e7e7', flexShrink: 0 }} />
+        <div className="main-divider" />
 
         <div className="content-area">
-          {/* Breadcrumb */}
           {currentPath && (
-            <div className="breadcrumb">
-              <span className="breadcrumb-item" onClick={() => handleOpenFile('')}>Home</span>
-              {breadcrumbParts.map((part, i) => (
-                <span key={i}>
-                  <span className="breadcrumb-separator">/</span>
-                  <span
-                    className={`breadcrumb-item ${i === breadcrumbParts.length - 1 ? 'current' : ''}`}
-                  >
-                    {part}
-                  </span>
-                </span>
-              ))}
-            </div>
+            <Breadcrumb className="app-breadcrumb" options={breadcrumbOptions} />
           )}
 
-          {/* Editor Area */}
           <div className="editor-area">
             <div className="editor-panel">
               <div className="editor-toolbar">
@@ -246,10 +219,20 @@ function App() {
                   </button>
                 </div>
                 <div className="editor-toolbar-actions">
+                  {isDirty() && (
+                    <Tag theme="warning" variant="light" size="small">
+                      Unsaved
+                    </Tag>
+                  )}
                   {currentPath && (
-                    <span className="editor-path" title={currentPath}>
-                      {currentPath}
-                    </span>
+                    <>
+                      <span className="editor-path" title={currentPath}>
+                        {currentPath}
+                      </span>
+                      <Button size="small" theme="primary" onClick={handleManualSave} disabled={workspace.readOnly}>
+                        Save (Ctrl+S)
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
@@ -274,8 +257,6 @@ function App() {
           </div>
         </div>
       </div>
-
-      <StatusBar status={fileStatus} workspace={workspace} />
 
       <SettingsDialog
         workspace={workspace}
