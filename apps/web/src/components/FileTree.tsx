@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Button, Dialog, DialogPlugin, Input, Space } from 'tdesign-react';
+import { Input } from 'tdesign-react';
+import { SearchIcon, FileIcon, FolderOpenIcon, AddIcon, RefreshIcon, SettingIcon } from 'tdesign-icons-react';
 import type { FileNode } from '@ai-work-doc/shared';
-import { RecentFiles } from './RecentFiles';
 
 interface FileTreeProps {
   tree: FileNode[];
@@ -10,19 +10,19 @@ interface FileTreeProps {
   currentPath: string;
   onOpen: (path: string) => void;
   onRefresh: () => void;
-  onCreate: (path: string) => Promise<boolean>;
+  onCreate: () => void;
   onRename: (from: string, to: string) => Promise<boolean>;
   onDelete: (path: string) => Promise<boolean>;
+  onSettings: () => void;
 }
 
 export function FileTree({
   tree, loading, readOnly,
   currentPath, onOpen, onRefresh,
-  onCreate, onRename, onDelete,
+  onCreate, onRename, onDelete, onSettings,
 }: FileTreeProps) {
   const [search, setSearch] = useState('');
 
-  // All directories start collapsed
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
     const allDirs = new Set<string>();
     const collect = (nodes: FileNode[]) => {
@@ -37,10 +37,6 @@ export function FileTree({
     return allDirs;
   });
 
-  const [createDialogVisible, setCreateDialogVisible] = useState(false);
-  const [createParentPath, setCreateParentPath] = useState('');
-  const [createName, setCreateName] = useState('');
-
   const toggleCollapse = (nodePath: string) => {
     setCollapsed((prev) => {
       const next = new Set(prev);
@@ -50,65 +46,10 @@ export function FileTree({
     });
   };
 
-  const handleCreate = () => {
-    setCreateParentPath('');
-    setCreateName('');
-    setCreateDialogVisible(true);
-  };
-
-  const handleCreateConfirm = async () => {
-    const dir = createParentPath ? `${createParentPath}/` : '';
-    const fileName = createName.endsWith('.md') ? createName : `${createName}.md`;
-    const fullPath = `${dir}${fileName}`;
-    const ok = await onCreate(fullPath);
-    if (ok) {
-      setCreateDialogVisible(false);
-      onRefresh();
-    }
-  };
-
-  const handleRename = (nodePath: string, oldName: string) => {
-    const dialog = DialogPlugin({
-      header: 'Rename',
-      body: (
-        <Input
-          defaultValue={oldName}
-          id="rename-input"
-          placeholder="New name"
-        />
-      ),
-      onConfirm: async () => {
-        const input = document.getElementById('rename-input') as HTMLInputElement;
-        const newName = input?.value || '';
-        if (newName && newName !== oldName) {
-          const dirPath = nodePath.includes('/') ? nodePath.substring(0, nodePath.lastIndexOf('/')) : '';
-          const toPath = dirPath ? `${dirPath}/${newName}` : newName;
-          const ok = await onRename(nodePath, toPath);
-          if (ok) onRefresh();
-        }
-        dialog.hide();
-      },
-      onClose: () => dialog.hide(),
-    });
-  };
-
-  const handleDelete = (nodePath: string) => {
-    const dialog = DialogPlugin.confirm({
-      header: 'Delete file',
-      body: `Are you sure you want to delete "${nodePath}"?`,
-      onConfirm: async () => {
-        const ok = await onDelete(nodePath);
-        if (ok) onRefresh();
-        dialog.hide();
-      },
-      onClose: () => dialog.hide(),
-    });
-  };
-
   const filterTree = (nodes: FileNode[]): FileNode[] => {
     if (!search) return nodes;
     return nodes.reduce<FileNode[]>((acc, node) => {
-      if (node.type === 'file' && node.name.toLowerCase().includes(search.toLowerCase())) {
+      if (node.name.toLowerCase().includes(search.toLowerCase())) {
         acc.push(node);
       } else if (node.type === 'directory') {
         const matched = filterTree(node.children);
@@ -128,79 +69,94 @@ export function FileTree({
       if (node.type === 'directory') {
         return (
           <div key={node.path}>
-            <div
-              className={`tree-node tree-directory ${isCollapsed ? '' : 'expanded'}`}
-              style={{ paddingLeft: depth * 16 }}
+            <button
+              className="sidebar-tree-toggle"
+              style={{ paddingLeft: 8 + depth * 16 }}
               onClick={() => toggleCollapse(node.path)}
             >
-              <span className="tree-arrow">{isCollapsed ? '▶' : '▼'}</span>
-              {node.name}
-            </div>
-            {!isCollapsed && node.children.length > 0 && renderNodes(node.children, depth + 1)}
+              <span style={{ fontSize: 10, width: 14, flexShrink: 0, color: 'rgba(0,0,0,0.4)' }}>
+                {isCollapsed ? '▶' : '▼'}
+              </span>
+              <span className="file-name" style={{ fontWeight: 600 }}>{node.name}</span>
+            </button>
+            {!isCollapsed && node.children.length > 0 && (
+              <div className="sidebar-tree-children">
+                {renderNodes(node.children, depth + 1)}
+              </div>
+            )}
           </div>
         );
       }
 
       return (
-        <div key={node.path} className="tree-node-row" style={{ paddingLeft: depth * 16 + 16 }}>
-          <button
-            className={`tree-node tree-file ${isActive ? 'active' : ''}`}
-            onClick={() => onOpen(node.path)}
-          >
-            {node.name}
-          </button>
-          {!readOnly && (
-            <span className="tree-actions">
-              <Button
-                size="small"
-                variant="text"
-                onClick={(e) => { e.stopPropagation(); handleRename(node.path, node.name); }}
-              >
-                Rename
-              </Button>
-              <Button
-                size="small"
-                variant="text"
-                theme="danger"
-                onClick={(e) => { e.stopPropagation(); handleDelete(node.path); }}
-              >
-                Delete
-              </Button>
-            </span>
-          )}
+        <div
+          key={node.path}
+          className={`sidebar-file-item ${isActive ? 'active' : ''}`}
+          style={{ paddingLeft: 8 + depth * 16 }}
+          onClick={() => onOpen(node.path)}
+          title={node.path}
+        >
+          <span className="file-icon">
+            <FileIcon size="14px" />
+          </span>
+          <span className="file-name">{node.name}</span>
         </div>
       );
     });
   };
 
   const filtered = filterTree(tree);
+  const allFiles = (function collectFiles(nodes: FileNode[]): FileNode[] {
+    return nodes.flatMap((n) =>
+      n.type === 'file' ? [n] : collectFiles(n.children)
+    );
+  })(tree);
 
   return (
-    <div className="file-tree-container">
-      <div className="file-tree-header">
-        <Space>
-          {!readOnly && (
-            <Button size="small" onClick={handleCreate}>+ New</Button>
-          )}
-          <Button size="small" variant="outline" onClick={onRefresh} loading={loading}>
-            Refresh
-          </Button>
-        </Space>
+    <div className="sidebar-content">
+      <div className="sidebar-logo">
+        <span className="sidebar-logo-text">AI Work Doc</span>
       </div>
-      <div className="file-tree-search">
+
+      <div className="sidebar-search">
         <Input
           value={search}
           onChange={(v) => setSearch(v)}
-          placeholder="Search files..."
+          placeholder="请输入内容"
+          prefixIcon={<SearchIcon />}
           clearable
+          size="small"
         />
       </div>
-      <RecentFiles onOpen={onOpen} />
-      <div className="tree-scroll">
+
+      <div className="sidebar-menu">
+        {allFiles.length > 0 && (
+          <>
+            <div className="sidebar-section-label">Recent</div>
+            {allFiles.slice(0, 6).map((f) => (
+              <div
+                key={f.path}
+                className={`sidebar-file-item ${currentPath === f.path ? 'active' : ''}`}
+                onClick={() => onOpen(f.path)}
+                title={f.path}
+              >
+                <span className="file-icon">
+                  <FileIcon size="14px" />
+                </span>
+                <span className="file-name">{f.name}</span>
+              </div>
+            ))}
+          </>
+        )}
+
+        <div className="sidebar-section-label">Files</div>
+
         {loading && tree.length === 0 ? (
-          <div className="tree-empty">Loading...</div>
+          <div style={{ padding: 16, textAlign: 'center', color: 'rgba(0,0,0,0.4)', fontSize: 12 }}>
+            Loading...
+          </div>
         ) : filtered.length === 0 ? (
-          <div className="tree-empty">
+          <div style={{ padding: 16, textAlign: 'center', color: 'rgba(0,0,0,0.4)', fontSize: 12 }}>
             {search ? 'No matching files' : 'No Markdown files found'}
           </div>
         ) : (
@@ -208,26 +164,20 @@ export function FileTree({
         )}
       </div>
 
-      <Dialog
-        header="New file"
-        visible={createDialogVisible}
-        onClose={() => setCreateDialogVisible(false)}
-        onConfirm={handleCreateConfirm}
-        confirmBtn="Create"
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <Input
-            value={createParentPath}
-            onChange={(v) => setCreateParentPath(v)}
-            placeholder="Parent directory (optional)"
-          />
-          <Input
-            value={createName}
-            onChange={(v) => setCreateName(v)}
-            placeholder="File name (e.g. notes)"
-          />
-        </div>
-      </Dialog>
+      <div className="sidebar-bottom">
+        {!readOnly && (
+          <button className="sidebar-bottom-btn" onClick={onCreate} title="New file">
+            <AddIcon size="16px" />
+          </button>
+        )}
+        <button className="sidebar-bottom-btn" onClick={onRefresh} title="Refresh">
+          <RefreshIcon size="16px" />
+        </button>
+        <div style={{ flex: 1 }} />
+        <button className="sidebar-bottom-btn" onClick={onSettings} title="Settings">
+          <SettingIcon size="16px" />
+        </button>
+      </div>
     </div>
   );
 }
