@@ -1,13 +1,11 @@
-import { Button, Dialog, DialogPlugin, Input, Tag, Breadcrumb } from 'tdesign-react';
+import { Dialog, DialogPlugin, Input, Breadcrumb } from 'tdesign-react';
 import type { TdBreadcrumbItemProps } from 'tdesign-react/es/breadcrumb/type';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { WorkspaceConfig } from '@ai-work-doc/shared';
 import { useWorkspace } from './hooks/useWorkspace';
 import { useFileTree } from './hooks/useFileTree';
 import { useFileContent } from './hooks/useFileContent';
-import { useAutoSave } from './hooks/useAutoSave';
 import { FileTree } from './components/FileTree';
-import { MarkdownEditor } from './components/MarkdownEditor';
 import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
 import { EmptyState } from './components/EmptyState';
@@ -18,24 +16,14 @@ function App() {
   const { workspace, loading, error, saveWorkspace, fetchWorkspace } = useWorkspace();
   const { tree, loading: treeLoading, fetchTree } = useFileTree();
   const {
-    currentPath, content, fileStatus, isDirty,
-    setContent, setFileStatus, markClean,
-    openFile, saveFile, createFile, renameFile, deleteFile,
+    currentPath, content, fileStatus,
+    openFile, createFile, renameFile, deleteFile,
   } = useFileContent();
 
-  const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
   const [createParentPath, setCreateParentPath] = useState('');
   const [createName, setCreateName] = useState('');
-
-  const wrappedSaveFile = useCallback(async (p?: string, c?: string) => {
-    const ok = await saveFile(p, c);
-    if (ok) markClean();
-    return ok;
-  }, [saveFile, markClean]);
-
-  useAutoSave(content, currentPath, workspace?.autoSave ?? false, wrappedSaveFile, setFileStatus);
 
   useEffect(() => {
     if (workspace?.rootPath) {
@@ -71,14 +59,9 @@ function App() {
     setSettingsVisible(false);
   }, [saveWorkspace, fetchTree]);
 
-  const handleManualSave = useCallback(async () => {
-    const ok = await saveFile();
-    if (ok) {
-      markClean();
-      setFileStatus('Saved');
-    }
-    return ok;
-  }, [saveFile, markClean, setFileStatus]);
+  const handleOpenFile = useCallback((path: string) => {
+    openFile(path);
+  }, [openFile]);
 
   const handleCreateConfirm = async () => {
     const dir = createParentPath ? `${createParentPath}/` : '';
@@ -141,11 +124,6 @@ function App() {
     });
   };
 
-  const handleOpenFile = useCallback((path: string) => {
-    openFile(path);
-    setActiveTab('edit');
-  }, [openFile]);
-
   const breadcrumbOptions: TdBreadcrumbItemProps[] = useMemo(() => {
     if (!currentPath || !workspace?.rootPath) return [];
     const relativePath = currentPath.replace(workspace.rootPath, '').replace(/^\//, '');
@@ -203,52 +181,16 @@ function App() {
 
           <div className="editor-area">
             <div className="editor-panel">
-              <div className="editor-toolbar">
-                <div className="editor-toolbar-tabs">
-                  <button
-                    className={`editor-toolbar-tab ${activeTab === 'edit' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('edit')}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className={`editor-toolbar-tab ${activeTab === 'preview' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('preview')}
-                  >
-                    Preview
-                  </button>
+              {currentPath && (
+                <div className="editor-toolbar">
+                  <div className="editor-toolbar-actions">
+                    <span className="editor-path" title={currentPath}>
+                      {currentPath}
+                    </span>
+                  </div>
                 </div>
-                <div className="editor-toolbar-actions">
-                  {isDirty() && (
-                    <Tag theme="warning" variant="light" size="small">
-                      Unsaved
-                    </Tag>
-                  )}
-                  {currentPath && (
-                    <>
-                      <span className="editor-path" title={currentPath}>
-                        {currentPath}
-                      </span>
-                      <Button size="small" theme="primary" onClick={handleManualSave} disabled={workspace.readOnly}>
-                        Save (Ctrl+S)
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {activeTab === 'edit' ? (
-                <MarkdownEditor
-                  content={content}
-                  readOnly={workspace.readOnly}
-                  disabled={!currentPath}
-                  currentPath={currentPath}
-                  onChange={setContent}
-                  onSave={handleManualSave}
-                />
-              ) : (
-                <MarkdownPreview content={content} />
               )}
+              <MarkdownPreview content={content} />
             </div>
 
             {currentPath && (
