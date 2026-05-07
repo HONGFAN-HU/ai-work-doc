@@ -604,6 +604,64 @@ body,
   font-size: 13px;
 }
 
+/* ---- Welcome State (empty content area) ---- */
+.welcome-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+}
+
+.welcome-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.welcome-icon {
+  height: 64px;
+  width: auto;
+  display: block;
+}
+
+.welcome-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.welcome-title {
+  margin: 0;
+  font-family: var(--td-font-family);
+  font-size: 20px;
+  font-weight: var(--td-font-weight-semibold);
+  line-height: 28px;
+  color: var(--td-text-primary);
+  white-space: nowrap;
+}
+
+.welcome-subtitle {
+  margin: 0;
+  font-family: var(--td-font-family);
+  font-size: var(--td-font-size-body-medium);
+  font-weight: var(--td-font-weight-regular);
+  line-height: var(--td-line-height-body-medium);
+  color: rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .welcome-title {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme='dark'] .welcome-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 /* ---- Empty & Error States ---- */
 .empty-state,
 .error-state {

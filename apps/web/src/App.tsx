@@ -8,6 +8,7 @@ import { useFileContent } from './hooks/useFileContent';
 import { FileTree } from './components/FileTree';
 import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
+import { WelcomeState } from './components/WelcomeState';
 import { EmptyState } from './components/EmptyState';
 import { ErrorState } from './components/ErrorState';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -184,7 +185,15 @@ function App() {
             <ErrorBoundary>
               <div className="editor-area-scroll">
                 <div className="editor-panel">
-                  <MarkdownPreview content={content} />
+                  {currentPath ? (
+                    <MarkdownPreview content={content} />
+                  ) : (
+                    <WelcomeState onCreate={() => {
+                      setCreateParentPath('');
+                      setCreateName('');
+                      setCreateDialogVisible(true);
+                    }} />
+                  )}
                 </div>
               </div>
 

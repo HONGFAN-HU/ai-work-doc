@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 export function useFileContent() {
   const [currentPath, setCurrentPath] = useState('');
-  const [content, setContent] = useState('# Welcome\n\nSelect a markdown file from the left panel.');
+  const [content, setContent] = useState('');
   const [fileStatus, setFileStatus] = useState('Idle');
   const savedContentRef = useRef(content);
   const dirtyRef = useRef(false);
@@ -104,8 +104,8 @@ export function useFileContent() {
     const json = await res.json();
     if (json.data?.deleted && currentPath === filePath) {
       setCurrentPath('');
-      setContent('# Welcome\n\nSelect a markdown file from the left panel.');
-      savedContentRef.current = '# Welcome\n\nSelect a markdown file from the left panel.';
+      setContent('');
+      savedContentRef.current = '';
       dirtyRef.current = false;
     }
     return json.data?.deleted === true;
