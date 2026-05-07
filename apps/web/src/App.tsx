@@ -10,6 +10,7 @@ import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
 import { EmptyState } from './components/EmptyState';
 import { ErrorState } from './components/ErrorState';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { SettingsDialog } from './components/SettingsDialog';
 
 function App() {
@@ -180,15 +181,17 @@ function App() {
           )}
 
           <div className="editor-area">
-            <div className="editor-area-scroll">
-              <div className="editor-panel">
-                <MarkdownPreview content={content} />
+            <ErrorBoundary>
+              <div className="editor-area-scroll">
+                <div className="editor-panel">
+                  <MarkdownPreview content={content} />
+                </div>
               </div>
-            </div>
 
-            {currentPath && (
-              <OutlinePanel content={content} />
-            )}
+              {currentPath && (
+                <OutlinePanel content={content} />
+              )}
+            </ErrorBoundary>
           </div>
         </div>
       </div>

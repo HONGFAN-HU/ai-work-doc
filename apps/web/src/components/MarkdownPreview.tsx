@@ -8,8 +8,9 @@ interface MarkdownPreviewProps {
   content: string;
 }
 
-function headingId(text: string): string {
-  return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+function safeId(text: string): string {
+  const id = text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+  return /^\d/.test(id) ? `h-${id}` : id;
 }
 
 function extractText(node: React.ReactNode): string {
@@ -25,7 +26,7 @@ function extractText(node: React.ReactNode): string {
 function makeHeading(level: number) {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
   return ({ children, ...props }: { children?: React.ReactNode }) => (
-    <Tag id={headingId(extractText(children))} {...props}>{children}</Tag>
+    <Tag {...props} id={safeId(extractText(children))}>{children}</Tag>
   );
 }
 
