@@ -623,6 +623,7 @@ body,
 }
 
 /* ---- Scrollbars ---- */
+/* Global: keep track and thumb invisible by default */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -633,20 +634,34 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
+  background: transparent;
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #b0b0b0;
+/* Show scrollbar thumb only on hover of scrollable areas */
+.sidebar-menu,
+.editor-area-scroll,
+.outline-content {
+  scrollbar-width: none;
 }
 
-.sidebar-menu,
-.markdown-preview,
-.editor-scroll,
-.outline-content {
+.sidebar-menu:hover,
+.editor-area-scroll:hover,
+.outline-content:hover {
   scrollbar-width: thin;
   scrollbar-color: #d0d0d0 transparent;
+}
+
+.sidebar-menu:hover::-webkit-scrollbar-thumb,
+.editor-area-scroll:hover::-webkit-scrollbar-thumb,
+.outline-content:hover::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+}
+
+.sidebar-menu:hover::-webkit-scrollbar-thumb:hover,
+.editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
+.outline-content:hover::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
 }
 
 /* ---- Dark Mode ---- */
@@ -803,11 +818,21 @@ body,
   color: rgba(255, 255, 255, 0.5);
 }
 
-[data-theme='dark'] ::-webkit-scrollbar-thumb {
+[data-theme='dark'] .sidebar-menu:hover,
+[data-theme='dark'] .editor-area-scroll:hover,
+[data-theme='dark'] .outline-content:hover {
+  scrollbar-color: #0f3460 transparent;
+}
+
+[data-theme='dark'] .sidebar-menu:hover::-webkit-scrollbar-thumb,
+[data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb,
+[data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb {
   background: #0f3460;
 }
 
-[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+[data-theme='dark'] .sidebar-menu:hover::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb:hover {
   background: #1a3a6b;
 }
 
