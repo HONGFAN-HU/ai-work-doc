@@ -8,6 +8,7 @@ import { useFileTree } from './hooks/useFileTree';
 import { useFileContent } from './hooks/useFileContent';
 import { Sidebar } from './components/Sidebar';
 import { DocLibrary } from './components/DocLibrary';
+import { DocPreviewPanel } from './components/DocPreviewPanel';
 import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
 import { EmptyState } from './components/EmptyState';
@@ -24,6 +25,8 @@ function App() {
   } = useFileContent();
 
   const [currentView, setCurrentView] = useState<'doclib' | 'editor'>('doclib');
+  const [previewPath, setPreviewPath] = useState('');
+  const [previewContent, setPreviewContent] = useState('');
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
   const [createParentPath, setCreateParentPath] = useState('');
@@ -70,7 +73,35 @@ function App() {
 
   const handleNavigate = useCallback((view: 'doclib' | 'editor') => {
     setCurrentView(view);
+    if (view === 'doclib') {
+      setPreviewPath('');
+      setPreviewContent('');
+    }
   }, []);
+
+  const handlePreviewFile = useCallback(async (path: string) => {
+    setPreviewPath(path);
+    try {
+      const query = new URLSearchParams({ path });
+      const res = await fetch(`/api/file?${query.toString()}`);
+      const json = await res.json();
+      setPreviewContent(json.data?.content || '');
+    } catch {
+      setPreviewContent('');
+    }
+  }, []);
+
+  const handleClosePreview = useCallback(() => {
+    setPreviewPath('');
+    setPreviewContent('');
+  }, []);
+
+  const handleFullscreen = useCallback(() => {
+    if (previewPath) {
+      openFile(previewPath);
+      setCurrentView('editor');
+    }
+  }, [previewPath, openFile]);
 
   const handleCreateConfirm = async () => {
     const dir = createParentPath ? `${createParentPath}/` : '';
@@ -133,6 +164,8 @@ function App() {
     });
   };
 
+  const previewFileName = previewPath ? previewPath.split('/').pop() || '' : '';
+
   const breadcrumbOptions: TdBreadcrumbItemProps[] = useMemo(() => {
     if (!currentPath || !workspace?.rootPath) return [];
     const relativePath = currentPath.replace(workspace.rootPath, '').replace(/^\//, '');
@@ -193,17 +226,27 @@ function App() {
 
         <div className="content-area">
           {currentView === 'doclib' ? (
-            <DocLibrary
-              tree={tree}
-              loading={treeLoading}
-              currentPath={currentPath}
-              onOpen={handleOpenFile}
-              onCreate={() => {
-                setCreateParentPath('');
-                setCreateName('');
-                setCreateDialogVisible(true);
-              }}
-            />
+            <div className="doc-lib-layout">
+              <DocLibrary
+                tree={tree}
+                loading={treeLoading}
+                selectedPath={previewPath}
+                onPreview={handlePreviewFile}
+                onCreate={() => {
+                  setCreateParentPath('');
+                  setCreateName('');
+                  setCreateDialogVisible(true);
+                }}
+              />
+              {previewPath && (
+                <DocPreviewPanel
+                  content={previewContent}
+                  fileName={previewFileName}
+                  onClose={handleClosePreview}
+                  onFullscreen={handleFullscreen}
+                />
+              )}
+            </div>
           ) : (
             <>
               {currentPath && (

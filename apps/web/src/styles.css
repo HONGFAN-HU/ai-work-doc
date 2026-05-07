@@ -730,6 +730,79 @@ body,
   font-size: var(--td-font-size-body-medium);
 }
 
+/* ---- Doc Library + Preview Layout ---- */
+.doc-lib-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ---- Document Preview Panel (right side) ---- */
+.doc-preview-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--td-gray-divider);
+  background: #fff;
+  overflow: hidden;
+}
+
+.doc-preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px var(--td-comp-paddinglr-l);
+  border-bottom: 1px solid var(--td-gray-divider);
+  flex-shrink: 0;
+  min-height: 48px;
+}
+
+.doc-preview-title {
+  font-size: var(--td-font-size-title-small);
+  font-weight: var(--td-font-weight-semibold);
+  color: var(--td-text-primary);
+  line-height: var(--td-line-height-title-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.doc-preview-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.doc-preview-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.doc-preview-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
 /* ---- Status Bar ---- */
 .status-bar {
   padding: 8px 16px 16px;
@@ -839,7 +912,8 @@ body,
 .sidebar-menu,
 .editor-area-scroll,
 .outline-content,
-.doc-library-body {
+.doc-library-body,
+.doc-preview-body {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
 }
@@ -847,21 +921,24 @@ body,
 .sidebar-menu:hover,
 .editor-area-scroll:hover,
 .outline-content:hover,
-.doc-library-body:hover {
+.doc-library-body:hover,
+.doc-preview-body:hover {
   scrollbar-color: #d0d0d0 transparent;
 }
 
 .sidebar-menu:hover::-webkit-scrollbar-thumb,
 .editor-area-scroll:hover::-webkit-scrollbar-thumb,
 .outline-content:hover::-webkit-scrollbar-thumb,
-.doc-library-body:hover::-webkit-scrollbar-thumb {
+.doc-library-body:hover::-webkit-scrollbar-thumb,
+.doc-preview-body:hover::-webkit-scrollbar-thumb {
   background: #d0d0d0;
 }
 
 .sidebar-menu:hover::-webkit-scrollbar-thumb:hover,
 .editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
 .outline-content:hover::-webkit-scrollbar-thumb:hover,
-.doc-library-body:hover::-webkit-scrollbar-thumb:hover {
+.doc-library-body:hover::-webkit-scrollbar-thumb:hover,
+.doc-preview-body:hover::-webkit-scrollbar-thumb:hover {
   background: #b0b0b0;
 }
 
@@ -1079,24 +1156,48 @@ body,
   color: rgba(255, 255, 255, 0.35);
 }
 
+[data-theme='dark'] .doc-preview-panel {
+  background: #16213e;
+  border-color: #0f3460;
+}
+
+[data-theme='dark'] .doc-preview-header {
+  border-color: #0f3460;
+}
+
+[data-theme='dark'] .doc-preview-title {
+  color: #e0e0e0;
+}
+
+[data-theme='dark'] .doc-preview-btn {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+[data-theme='dark'] .doc-preview-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
 [data-theme='dark'] .sidebar-menu:hover,
 [data-theme='dark'] .editor-area-scroll:hover,
 [data-theme='dark'] .outline-content:hover,
-[data-theme='dark'] .doc-library-body:hover {
+[data-theme='dark'] .doc-library-body:hover,
+[data-theme='dark'] .doc-preview-body:hover {
   scrollbar-color: #0f3460 transparent;
 }
 
 [data-theme='dark'] .sidebar-menu:hover::-webkit-scrollbar-thumb,
 [data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb,
 [data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb,
-[data-theme='dark'] .doc-library-body:hover::-webkit-scrollbar-thumb {
+[data-theme='dark'] .doc-library-body:hover::-webkit-scrollbar-thumb,
+[data-theme='dark'] .doc-preview-body:hover::-webkit-scrollbar-thumb {
   background: #0f3460;
 }
 
 [data-theme='dark'] .sidebar-menu:hover::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb:hover,
-[data-theme='dark'] .doc-library-body:hover::-webkit-scrollbar-thumb:hover {
+[data-theme='dark'] .doc-library-body:hover::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .doc-preview-body:hover::-webkit-scrollbar-thumb:hover {
   background: #1a3a6b;
 }
 
