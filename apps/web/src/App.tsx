@@ -1,14 +1,15 @@
-import { Dialog, DialogPlugin, Input, Breadcrumb } from 'tdesign-react';
+import { Dialog, DialogPlugin, Input } from 'tdesign-react';
+import { Breadcrumb } from 'tdesign-react';
 import type { TdBreadcrumbItemProps } from 'tdesign-react/es/breadcrumb/type';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { WorkspaceConfig } from '@ai-work-doc/shared';
 import { useWorkspace } from './hooks/useWorkspace';
 import { useFileTree } from './hooks/useFileTree';
 import { useFileContent } from './hooks/useFileContent';
-import { FileTree } from './components/FileTree';
+import { Sidebar } from './components/Sidebar';
+import { DocLibrary } from './components/DocLibrary';
 import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
-import { WelcomeState } from './components/WelcomeState';
 import { EmptyState } from './components/EmptyState';
 import { ErrorState } from './components/ErrorState';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -18,10 +19,11 @@ function App() {
   const { workspace, loading, error, saveWorkspace, fetchWorkspace } = useWorkspace();
   const { tree, loading: treeLoading, fetchTree } = useFileTree();
   const {
-    currentPath, content, fileStatus,
+    currentPath, content,
     openFile, createFile, renameFile, deleteFile,
   } = useFileContent();
 
+  const [currentView, setCurrentView] = useState<'doclib' | 'editor'>('doclib');
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
   const [createParentPath, setCreateParentPath] = useState('');
@@ -63,7 +65,12 @@ function App() {
 
   const handleOpenFile = useCallback((path: string) => {
     openFile(path);
+    setCurrentView('editor');
   }, [openFile]);
+
+  const handleNavigate = useCallback((view: 'doclib' | 'editor') => {
+    setCurrentView(view);
+  }, []);
 
   const handleCreateConfirm = async () => {
     const dir = createParentPath ? `${createParentPath}/` : '';
@@ -130,7 +137,16 @@ function App() {
     if (!currentPath || !workspace?.rootPath) return [];
     const relativePath = currentPath.replace(workspace.rootPath, '').replace(/^\//, '');
     const parts = relativePath ? relativePath.split('/') : [];
-    const items: TdBreadcrumbItemProps[] = [{ content: 'Home', href: '#' }];
+    const items: TdBreadcrumbItemProps[] = [
+      {
+        content: '文档库',
+        href: '#',
+        onClick: (e) => {
+          e?.preventDefault();
+          setCurrentView('doclib');
+        },
+      },
+    ];
     parts.forEach((part, i) => {
       items.push({
         content: part,
@@ -156,20 +172,19 @@ function App() {
     <div className="app-shell">
       <div className="main-layout">
         <aside className="sidebar">
-          <FileTree
+          <Sidebar
             tree={tree}
-            loading={treeLoading}
-            readOnly={workspace.readOnly}
             currentPath={currentPath}
+            activeView={currentView}
+            readOnly={workspace.readOnly}
+            onNavigate={handleNavigate}
             onOpen={handleOpenFile}
-            onRefresh={fetchTree}
             onCreate={() => {
               setCreateParentPath('');
               setCreateName('');
               setCreateDialogVisible(true);
             }}
-            onRename={handleRename}
-            onDelete={handleDelete}
+            onRefresh={fetchTree}
             onSettings={() => setSettingsVisible(true)}
           />
         </aside>
@@ -177,31 +192,45 @@ function App() {
         <div className="main-divider" />
 
         <div className="content-area">
-          {currentPath && (
-            <Breadcrumb className="app-breadcrumb" options={breadcrumbOptions} />
-          )}
-
-          <div className="editor-area">
-            <ErrorBoundary>
-              <div className="editor-area-scroll">
-                <div className="editor-panel">
-                  {currentPath ? (
-                    <MarkdownPreview content={content} />
-                  ) : (
-                    <WelcomeState onCreate={() => {
-                      setCreateParentPath('');
-                      setCreateName('');
-                      setCreateDialogVisible(true);
-                    }} />
-                  )}
-                </div>
-              </div>
-
+          {currentView === 'doclib' ? (
+            <DocLibrary
+              tree={tree}
+              loading={treeLoading}
+              currentPath={currentPath}
+              onOpen={handleOpenFile}
+              onCreate={() => {
+                setCreateParentPath('');
+                setCreateName('');
+                setCreateDialogVisible(true);
+              }}
+            />
+          ) : (
+            <>
               {currentPath && (
-                <OutlinePanel content={content} />
+                <Breadcrumb className="app-breadcrumb" options={breadcrumbOptions} />
               )}
-            </ErrorBoundary>
-          </div>
+
+              <div className="editor-area">
+                <ErrorBoundary>
+                  <div className="editor-area-scroll">
+                    <div className="editor-panel">
+                      {currentPath ? (
+                        <MarkdownPreview content={content} />
+                      ) : (
+                        <div className="doc-library-empty" style={{ padding: 48, textAlign: 'center', color: 'var(--td-text-placeholder)' }}>
+                          Select a file from 文档库 to start editing
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {currentPath && (
+                    <OutlinePanel content={content} />
+                  )}
+                </ErrorBoundary>
+              </div>
+            </>
+          )}
         </div>
       </div>
 

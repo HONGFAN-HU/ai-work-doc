@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { statSync } from 'node:fs';
 import path from 'node:path';
 import type { FileNode } from '@ai-work-doc/shared';
 import { SUPPORTED_MARKDOWN_EXTENSIONS } from '@ai-work-doc/shared';
@@ -16,23 +17,27 @@ export async function readTree(rootPath: string, currentPath = ''): Promise<File
     const absolutePath = path.join(rootPath, relativePath);
 
     if (entry.isDirectory()) {
+      const dirStat = statSync(absolutePath);
       nodes.push({
         name: entry.name,
         path: relativePath,
         absolutePath,
         type: 'directory',
+        lastModified: dirStat.mtimeMs,
         children: await readTree(rootPath, relativePath),
       });
       continue;
     }
 
     if (entry.isFile() && isMarkdownFile(entry.name)) {
+      const fileStat = statSync(absolutePath);
       nodes.push({
         name: entry.name,
         path: relativePath,
         absolutePath,
         type: 'file',
         ext: path.extname(entry.name),
+        lastModified: fileStat.mtimeMs,
         children: [],
       });
     }

@@ -13,5 +13,6 @@ export type FileNode = {
   absolutePath: string;
   type: 'file' | 'directory';
   ext?: string;
+  lastModified?: number;
   children: FileNode[];
 };
