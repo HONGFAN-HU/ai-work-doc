@@ -180,8 +180,10 @@ function App() {
           )}
 
           <div className="editor-area">
-            <div className="editor-panel">
-              <MarkdownPreview content={content} />
+            <div className="editor-area-scroll">
+              <div className="editor-panel">
+                <MarkdownPreview content={content} />
+              </div>
             </div>
 
             {currentPath && (

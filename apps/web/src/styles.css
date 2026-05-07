@@ -358,14 +358,20 @@ body,
   overflow: hidden;
 }
 
-/* Editor Panel - matching Figma text-editor */
-.editor-panel {
+.editor-area-scroll {
   flex: 1;
   min-width: 300px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Editor Panel - matching Figma text-editor */
+.editor-panel {
+  min-height: 100%;
   display: flex;
   flex-direction: column;
   background: #fff;
-  overflow: hidden;
   isolation: isolate;
 }
 
@@ -408,10 +414,6 @@ body,
 
 /* ---- Markdown Preview (matching Figma content typography) ---- */
 .markdown-preview {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
 .markdown-preview-content {
@@ -565,7 +567,6 @@ body,
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 0;
   overflow: hidden;
 }
 
@@ -574,8 +575,6 @@ body,
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
 }
 
 .outline-content .t-anchor__item-link {
