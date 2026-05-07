@@ -161,6 +161,7 @@ body,
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
 }
 
 /* Section labels - matching Figma "Recent" / "Function" */
@@ -364,6 +365,7 @@ body,
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
 }
 
 /* Editor Panel - matching Figma text-editor */
@@ -575,6 +577,7 @@ body,
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
 }
 
 .outline-content .t-anchor__item-link {
@@ -623,7 +626,7 @@ body,
 }
 
 /* ---- Scrollbars ---- */
-/* Global: keep track and thumb invisible by default */
+/* Global: track always present, thumb transparent by default */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -638,17 +641,17 @@ body,
   border-radius: 3px;
 }
 
-/* Show scrollbar thumb only on hover of scrollable areas */
+/* Scrollable panels: always reserve scrollbar space, thumb hidden until hover */
 .sidebar-menu,
 .editor-area-scroll,
 .outline-content {
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 .sidebar-menu:hover,
 .editor-area-scroll:hover,
 .outline-content:hover {
-  scrollbar-width: thin;
   scrollbar-color: #d0d0d0 transparent;
 }
 
@@ -662,6 +665,20 @@ body,
 .editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
 .outline-content:hover::-webkit-scrollbar-thumb:hover {
   background: #b0b0b0;
+}
+
+/* Code blocks in preview: always show horizontal scrollbar */
+.markdown-preview pre::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+}
+
+.markdown-preview pre::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}
+
+.markdown-preview pre {
+  scrollbar-width: thin;
+  scrollbar-color: #d0d0d0 transparent;
 }
 
 /* ---- Dark Mode ---- */
@@ -834,6 +851,18 @@ body,
 [data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb:hover {
   background: #1a3a6b;
+}
+
+[data-theme='dark'] .markdown-preview pre::-webkit-scrollbar-thumb {
+  background: #0f3460;
+}
+
+[data-theme='dark'] .markdown-preview pre::-webkit-scrollbar-thumb:hover {
+  background: #1a3a6b;
+}
+
+[data-theme='dark'] .markdown-preview pre {
+  scrollbar-color: #0f3460 transparent;
 }
 
 /* ---- Responsive ---- */
