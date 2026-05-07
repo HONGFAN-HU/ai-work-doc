@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -11,31 +12,30 @@ function headingId(text: string): string {
   return text.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 }
 
+function extractText(node: React.ReactNode): string {
+  if (typeof node === 'string') return node;
+  if (typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join('');
+  if (React.isValidElement(node)) {
+    return extractText((node.props as { children?: React.ReactNode }).children);
+  }
+  return '';
+}
+
+function makeHeading(level: number) {
+  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  return ({ children, ...props }: { children?: React.ReactNode }) => (
+    <Tag id={headingId(extractText(children))} {...props}>{children}</Tag>
+  );
+}
+
 const components: Components = {
-  h1: ({ children, ...props }) => {
-    const text = String(children);
-    return <h1 id={headingId(text)} {...props}>{children}</h1>;
-  },
-  h2: ({ children, ...props }) => {
-    const text = String(children);
-    return <h2 id={headingId(text)} {...props}>{children}</h2>;
-  },
-  h3: ({ children, ...props }) => {
-    const text = String(children);
-    return <h3 id={headingId(text)} {...props}>{children}</h3>;
-  },
-  h4: ({ children, ...props }) => {
-    const text = String(children);
-    return <h4 id={headingId(text)} {...props}>{children}</h4>;
-  },
-  h5: ({ children, ...props }) => {
-    const text = String(children);
-    return <h5 id={headingId(text)} {...props}>{children}</h5>;
-  },
-  h6: ({ children, ...props }) => {
-    const text = String(children);
-    return <h6 id={headingId(text)} {...props}>{children}</h6>;
-  },
+  h1: makeHeading(1),
+  h2: makeHeading(2),
+  h3: makeHeading(3),
+  h4: makeHeading(4),
+  h5: makeHeading(5),
+  h6: makeHeading(6),
 };
 
 export function MarkdownPreview({ content }: MarkdownPreviewProps) {
