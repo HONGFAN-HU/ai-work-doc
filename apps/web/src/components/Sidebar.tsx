@@ -11,6 +11,7 @@ interface SidebarProps {
   readOnly: boolean;
   onNavigate: (view: 'doclib' | 'editor') => void;
   onOpen: (path: string) => void;
+  onCloseCurrentFile: () => void;
   onCreate: () => void;
   onRefresh: () => void;
   onSettings: () => void;
@@ -18,7 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({
   tree, currentPath, activeView, readOnly,
-  onNavigate, onOpen, onCreate, onRefresh, onSettings,
+  onNavigate, onOpen, onCloseCurrentFile, onCreate, onRefresh, onSettings,
 }: SidebarProps) {
   const [recentPaths, setRecentPaths] = useState<string[]>([]);
 
@@ -48,6 +49,9 @@ export function Sidebar({
     e.stopPropagation();
     setRecentPaths((prev) => prev.filter((p) => p !== path));
     fetch(`/api/recent?path=${encodeURIComponent(path)}`, { method: 'DELETE' }).catch(() => {});
+    if (currentPath === path) {
+      onCloseCurrentFile();
+    }
   };
 
   return (

@@ -111,9 +111,17 @@ export function useFileContent() {
     return json.data?.deleted === true;
   }, [currentPath]);
 
+  const closeFile = useCallback(() => {
+    setCurrentPath('');
+    setContent('');
+    savedContentRef.current = '';
+    dirtyRef.current = false;
+    setFileStatus('Idle');
+  }, []);
+
   return {
     currentPath, content, fileStatus, isDirty,
     setContent: setContentAndDirty, setFileStatus,
-    openFile, saveFile, createFile, renameFile, deleteFile, markClean,
+    openFile, saveFile, createFile, renameFile, deleteFile, markClean, closeFile,
   };
 }

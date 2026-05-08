@@ -14,6 +14,7 @@ import { OutlinePanel } from './components/OutlinePanel';
 import { EmptyState } from './components/EmptyState';
 import { ErrorState } from './components/ErrorState';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { WelcomeState } from './components/WelcomeState';
 import { SettingsDialog } from './components/SettingsDialog';
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
   const { tree, loading: treeLoading, fetchTree } = useFileTree();
   const {
     currentPath, content,
-    openFile, createFile, renameFile, deleteFile,
+    openFile, createFile, renameFile, deleteFile, closeFile,
   } = useFileContent();
 
   const [currentView, setCurrentView] = useState<'doclib' | 'editor'>('doclib');
@@ -95,6 +96,10 @@ function App() {
     setPreviewPath('');
     setPreviewContent('');
   }, []);
+
+  const handleCloseCurrentFile = useCallback(() => {
+    closeFile();
+  }, [closeFile]);
 
   const handleFullscreen = useCallback(() => {
     if (previewPath) {
@@ -219,6 +224,7 @@ function App() {
             }}
             onRefresh={fetchTree}
             onSettings={() => setSettingsVisible(true)}
+            onCloseCurrentFile={handleCloseCurrentFile}
           />
         </aside>
 
@@ -260,9 +266,11 @@ function App() {
                       {currentPath ? (
                         <MarkdownPreview content={content} />
                       ) : (
-                        <div className="doc-library-empty" style={{ padding: 48, textAlign: 'center', color: 'var(--td-text-placeholder)' }}>
-                          Select a file from 文档库 to start editing
-                        </div>
+                        <WelcomeState onCreate={() => {
+                          setCreateParentPath('');
+                          setCreateName('');
+                          setCreateDialogVisible(true);
+                        }} />
                       )}
                     </div>
                   </div>
