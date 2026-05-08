@@ -736,7 +736,7 @@ body,
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  gap: 0;
+  gap: var(--td-comp-paddinglr-xxl);
 }
 
 /* ---- Document Preview Panel (right side) ---- */
@@ -801,6 +801,7 @@ body,
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-gutter: stable;
+  padding: var(--td-comp-paddinglr-l);
 }
 
 /* ---- Status Bar ---- */
