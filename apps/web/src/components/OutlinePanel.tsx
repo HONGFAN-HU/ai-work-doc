@@ -81,7 +81,7 @@ function parseHeadings(content: string): OutlineItem[] {
 
 export function OutlinePanel({ content }: OutlinePanelProps) {
   const getContainer = useCallback(() => {
-    return (document.querySelector('.editor-area-scroll') as HTMLElement) || window;
+    return (document.querySelector('.editor-area') as HTMLElement) || window;
   }, []);
 
   const tree = useMemo(() => {

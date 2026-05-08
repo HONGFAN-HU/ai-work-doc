@@ -379,16 +379,13 @@ body,
   min-height: 0;
   display: flex;
   gap: 16px;
-  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .editor-area-scroll {
   flex: 1;
   min-width: 300px;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-gutter: stable;
 }
 
 /* Editor Panel - matching Figma text-editor */
@@ -593,6 +590,10 @@ body,
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-height: 100vh;
 }
 
 .outline-content {
@@ -778,10 +779,10 @@ body,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px var(--td-comp-paddinglr-l);
+  padding: 6px var(--td-comp-paddinglr-l);
   border-bottom: 1px solid var(--td-gray-divider);
   flex-shrink: 0;
-  min-height: 40px;
+  min-height: 36px;
 }
 
 .doc-preview-title {
@@ -932,7 +933,7 @@ body,
 
 /* Scrollable panels: always reserve scrollbar space, thumb hidden until hover */
 .sidebar-menu,
-.editor-area-scroll,
+.editor-area,
 .outline-content,
 .doc-library-body,
 .doc-preview-body {
@@ -941,7 +942,7 @@ body,
 }
 
 .sidebar-menu:hover,
-.editor-area-scroll:hover,
+.editor-area:hover,
 .outline-content:hover,
 .doc-library-body:hover,
 .doc-preview-body:hover {
@@ -949,7 +950,7 @@ body,
 }
 
 .sidebar-menu:hover::-webkit-scrollbar-thumb,
-.editor-area-scroll:hover::-webkit-scrollbar-thumb,
+.editor-area:hover::-webkit-scrollbar-thumb,
 .outline-content:hover::-webkit-scrollbar-thumb,
 .doc-library-body:hover::-webkit-scrollbar-thumb,
 .doc-preview-body:hover::-webkit-scrollbar-thumb {
@@ -957,7 +958,7 @@ body,
 }
 
 .sidebar-menu:hover::-webkit-scrollbar-thumb:hover,
-.editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
+.editor-area:hover::-webkit-scrollbar-thumb:hover,
 .outline-content:hover::-webkit-scrollbar-thumb:hover,
 .doc-library-body:hover::-webkit-scrollbar-thumb:hover,
 .doc-preview-body:hover::-webkit-scrollbar-thumb:hover {
@@ -1208,7 +1209,7 @@ body,
 }
 
 [data-theme='dark'] .sidebar-menu:hover,
-[data-theme='dark'] .editor-area-scroll:hover,
+[data-theme='dark'] .editor-area:hover,
 [data-theme='dark'] .outline-content:hover,
 [data-theme='dark'] .doc-library-body:hover,
 [data-theme='dark'] .doc-preview-body:hover {
@@ -1216,7 +1217,7 @@ body,
 }
 
 [data-theme='dark'] .sidebar-menu:hover::-webkit-scrollbar-thumb,
-[data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb,
+[data-theme='dark'] .editor-area:hover::-webkit-scrollbar-thumb,
 [data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb,
 [data-theme='dark'] .doc-library-body:hover::-webkit-scrollbar-thumb,
 [data-theme='dark'] .doc-preview-body:hover::-webkit-scrollbar-thumb {
@@ -1224,7 +1225,7 @@ body,
 }
 
 [data-theme='dark'] .sidebar-menu:hover::-webkit-scrollbar-thumb:hover,
-[data-theme='dark'] .editor-area-scroll:hover::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] .editor-area:hover::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] .outline-content:hover::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] .doc-library-body:hover::-webkit-scrollbar-thumb:hover,
 [data-theme='dark'] .doc-preview-body:hover::-webkit-scrollbar-thumb:hover {
