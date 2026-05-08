@@ -11,9 +11,8 @@ import { DocLibrary } from './components/DocLibrary';
 import { DocPreviewPanel } from './components/DocPreviewPanel';
 import { MarkdownPreview } from './components/MarkdownPreview';
 import { OutlinePanel } from './components/OutlinePanel';
-import { EmptyState } from './components/EmptyState';
-import { ErrorState } from './components/ErrorState';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { ErrorState } from './components/ErrorState';
 import { WelcomeState } from './components/WelcomeState';
 import { SettingsDialog } from './components/SettingsDialog';
 
@@ -53,11 +52,6 @@ function App() {
     }
     document.documentElement.setAttribute('data-theme', theme);
   }, [workspace?.theme]);
-
-  const handleSaveWorkspace = useCallback(async (rootPath: string) => {
-    await saveWorkspace({ rootPath, port: 3001, autoSave: true, readOnly: false });
-    await fetchTree();
-  }, [saveWorkspace, fetchTree]);
 
   const handleSettingsSave = useCallback(async (updates: Partial<WorkspaceConfig>) => {
     const res = await saveWorkspace(updates);
@@ -198,12 +192,8 @@ function App() {
     return <ErrorState message={error} onRetry={fetchWorkspace} />;
   }
 
-  if (loading) {
+  if (loading || !workspace) {
     return <div className="app-loading">Loading workspace...</div>;
-  }
-
-  if (!workspace?.rootPath) {
-    return <EmptyState onConfigure={handleSaveWorkspace} />;
   }
 
   return (

@@ -7,7 +7,7 @@ const configDir = path.join(os.homedir(), '.ai-workdoc');
 const configPath = process.env.CONFIG_PATH || path.join(configDir, 'config.json');
 
 const defaultConfig: WorkspaceConfig = {
-  rootPath: process.env.DEFAULT_ROOT_PATH || '',
+  rootPath: process.env.DEFAULT_ROOT_PATH || path.join(os.homedir(), 'Documents'),
   port: 3001,
   autoSave: true,
   readOnly: String(process.env.READ_ONLY_MODE || 'false') === 'true',

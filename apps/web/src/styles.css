@@ -897,7 +897,6 @@ body,
 }
 
 /* ---- Empty & Error States ---- */
-.empty-state,
 .error-state {
   display: flex;
   align-items: center;
@@ -906,12 +905,10 @@ body,
   background: #f3f5f7;
 }
 
-.empty-state h2,
 .error-state h2 {
   margin: 0 0 8px 0;
 }
 
-.empty-state p,
 .error-state p {
   color: rgba(0, 0, 0, 0.6);
   margin: 0;
@@ -987,7 +984,6 @@ body,
 }
 
 [data-theme='dark'] .app-shell,
-[data-theme='dark'] .empty-state,
 [data-theme='dark'] .error-state {
   background: #1a1a2e;
 }
