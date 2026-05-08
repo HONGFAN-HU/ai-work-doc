@@ -38,6 +38,21 @@ export function Sidebar({
       </div>
 
       <div className="sidebar-menu">
+        <div className="sidebar-section-label">Function</div>
+
+        <div
+          className={`sidebar-file-item ${activeView === 'doclib' ? 'active' : ''}`}
+          onClick={() => onNavigate('doclib')}
+          title="文档库"
+        >
+          <span className="file-icon"><FolderIcon size="14px" /></span>
+          <span className="file-name">文档库</span>
+        </div>
+        <div className="sidebar-file-item" title="项目">
+          <span className="file-icon"><FolderIcon size="14px" /></span>
+          <span className="file-name">项目</span>
+        </div>
+
         {recentFiles.length > 0 && (
           <>
             <div className="sidebar-section-label">Recent</div>
@@ -54,21 +69,6 @@ export function Sidebar({
             ))}
           </>
         )}
-
-        <div className="sidebar-section-label">Function</div>
-
-        <div
-          className={`sidebar-file-item ${activeView === 'doclib' ? 'active' : ''}`}
-          onClick={() => onNavigate('doclib')}
-          title="文档库"
-        >
-          <span className="file-icon"><FolderIcon size="14px" /></span>
-          <span className="file-name">文档库</span>
-        </div>
-        <div className="sidebar-file-item" title="项目">
-          <span className="file-icon"><FolderIcon size="14px" /></span>
-          <span className="file-name">项目</span>
-        </div>
       </div>
 
       <div className="sidebar-bottom">
