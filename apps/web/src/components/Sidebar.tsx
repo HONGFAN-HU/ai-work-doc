@@ -87,7 +87,7 @@ export function Sidebar({
             {recentFiles.map((f) => (
               <div
                 key={f.path}
-                className={`sidebar-file-item recent-file-item ${currentPath === f.path ? 'active' : ''}`}
+                className={`sidebar-file-item recent-file-item ${activeView === 'editor' && currentPath === f.path ? 'active' : ''}`}
                 onClick={() => onOpen(f.path)}
                 title={f.path}
               >
