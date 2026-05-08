@@ -255,8 +255,8 @@ body,
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 56px;
-  padding: 14px var(--td-comp-paddinglr-l);
+  height: 44px;
+  padding: 10px var(--td-comp-paddinglr-l);
   flex-shrink: 0;
   background: #fff;
 }
@@ -778,10 +778,10 @@ body,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px var(--td-comp-paddinglr-l);
+  padding: 8px var(--td-comp-paddinglr-l);
   border-bottom: 1px solid var(--td-gray-divider);
   flex-shrink: 0;
-  min-height: 48px;
+  min-height: 40px;
 }
 
 .doc-preview-title {
