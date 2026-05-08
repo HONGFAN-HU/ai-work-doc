@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Input } from 'tdesign-react';
 import { SearchIcon, AddIcon, RefreshIcon, SettingIcon, FolderIcon, FileIcon } from 'tdesign-icons-react';
 import type { FileNode } from '@ai-work-doc/shared';
@@ -19,8 +20,22 @@ export function Sidebar({
   tree, currentPath, activeView, readOnly,
   onNavigate, onOpen, onCreate, onRefresh, onSettings,
 }: SidebarProps) {
-  const allFiles = flattenFiles(tree);
-  const recentFiles = allFiles.slice(0, 6);
+  const [recentPaths, setRecentPaths] = useState<string[]>([]);
+
+  useEffect(() => {
+    fetch('/api/recent')
+      .then((res) => res.json())
+      .then((json) => setRecentPaths(json.data?.recentFiles || []))
+      .catch(() => {});
+  }, [currentPath]);
+
+  const pathToName = new Map(
+    flattenFiles(tree).map((f) => [f.path, f.name])
+  );
+  const recentFiles = recentPaths
+    .filter((p) => pathToName.has(p))
+    .slice(0, 10)
+    .map((p) => ({ path: p, name: pathToName.get(p)! }));
 
   return (
     <div className="sidebar-content">
