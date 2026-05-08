@@ -23,6 +23,13 @@ export function Sidebar({
   const [recentPaths, setRecentPaths] = useState<string[]>([]);
 
   useEffect(() => {
+    if (currentPath) {
+      setRecentPaths((prev) => {
+        if (prev.includes(currentPath)) return prev;
+        return [currentPath, ...prev].slice(0, 20);
+      });
+    }
+
     fetch('/api/recent')
       .then((res) => res.json())
       .then((json) => setRecentPaths(json.data?.recentFiles || []))
@@ -34,7 +41,7 @@ export function Sidebar({
   );
   const recentFiles = recentPaths
     .filter((p) => pathToName.has(p))
-    .slice(0, 10)
+    .slice(0, 20)
     .map((p) => ({ path: p, name: pathToName.get(p)! }));
 
   return (

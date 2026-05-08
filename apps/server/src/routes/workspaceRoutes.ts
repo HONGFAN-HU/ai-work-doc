@@ -56,7 +56,12 @@ export function registerWorkspaceRoutes(app: FastifyInstance) {
     handler: async (request) => {
       const body = request.body as { path: string };
       const config = await readConfig();
-      const recentFiles = [body.path, ...config.recentFiles.filter((f) => f !== body.path)].slice(0, 20);
+      let recentFiles: string[];
+      if (config.recentFiles.includes(body.path)) {
+        recentFiles = config.recentFiles;
+      } else {
+        recentFiles = [body.path, ...config.recentFiles].slice(0, 20);
+      }
       await writeConfig({ ...config, recentFiles });
       return { code: 0, message: 'ok', data: { recentFiles }, requestId: requestId() };
     },
