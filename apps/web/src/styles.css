@@ -225,6 +225,30 @@ body,
   min-width: 0;
 }
 
+.recent-close-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.recent-file-item:hover .recent-close-btn {
+  display: flex;
+}
+
+.recent-close-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.9);
+}
+
 /* Bottom bar - matching Figma .master/item normalMenu/menuOperations */
 .sidebar-bottom {
   border-top: 1px solid var(--td-gray-divider);
@@ -1000,6 +1024,15 @@ body,
 [data-theme='dark'] .sidebar-file-item.active {
   background: #1a3a6b;
   color: #64b5f6;
+}
+
+[data-theme='dark'] .recent-close-btn {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+[data-theme='dark'] .recent-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 [data-theme='dark'] .sidebar-section-label {

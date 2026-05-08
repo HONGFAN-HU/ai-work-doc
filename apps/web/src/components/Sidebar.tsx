@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Input } from 'tdesign-react';
-import { SearchIcon, AddIcon, RefreshIcon, SettingIcon, FolderIcon, FileIcon } from 'tdesign-icons-react';
+import { SearchIcon, AddIcon, RefreshIcon, SettingIcon, FolderIcon, FileIcon, CloseIcon } from 'tdesign-icons-react';
 import type { FileNode } from '@ai-work-doc/shared';
 import { LogoSvg } from './LogoSvg';
 
@@ -44,6 +44,12 @@ export function Sidebar({
     .slice(0, 20)
     .map((p) => ({ path: p, name: pathToName.get(p)! }));
 
+  const removeRecent = (path: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setRecentPaths((prev) => prev.filter((p) => p !== path));
+    fetch(`/api/recent?path=${encodeURIComponent(path)}`, { method: 'DELETE' }).catch(() => {});
+  };
+
   return (
     <div className="sidebar-content">
       <div className="sidebar-logo">
@@ -81,12 +87,19 @@ export function Sidebar({
             {recentFiles.map((f) => (
               <div
                 key={f.path}
-                className={`sidebar-file-item ${currentPath === f.path ? 'active' : ''}`}
+                className={`sidebar-file-item recent-file-item ${currentPath === f.path ? 'active' : ''}`}
                 onClick={() => onOpen(f.path)}
                 title={f.path}
               >
                 <span className="file-icon"><FileIcon size="14px" /></span>
                 <span className="file-name">{f.name}</span>
+                <button
+                  className="recent-close-btn"
+                  onClick={(e) => removeRecent(f.path, e)}
+                  title="Remove from recent"
+                >
+                  <CloseIcon size="12px" />
+                </button>
               </div>
             ))}
           </>

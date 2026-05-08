@@ -66,4 +66,15 @@ export function registerWorkspaceRoutes(app: FastifyInstance) {
       return { code: 0, message: 'ok', data: { recentFiles }, requestId: requestId() };
     },
   });
+
+  app.delete('/api/recent', async (request) => {
+    const query = request.query as { path?: string };
+    if (!query.path) {
+      return { code: 400, message: 'path is required', requestId: requestId() };
+    }
+    const config = await readConfig();
+    const recentFiles = config.recentFiles.filter((f) => f !== query.path);
+    await writeConfig({ ...config, recentFiles });
+    return { code: 0, message: 'ok', data: { recentFiles }, requestId: requestId() };
+  });
 }
