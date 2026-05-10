@@ -161,6 +161,7 @@ body,
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-gutter: stable;
+  user-select: none;
 }
 
 /* Section labels - matching Figma "Recent" / "Function" */
@@ -172,6 +173,7 @@ body,
   padding: 4px 0 4px 8px;
   white-space: nowrap;
   flex-shrink: 0;
+  user-select: none;
 }
 
 /* File items - matching Figma Button 按钮 in menu */
@@ -182,6 +184,7 @@ body,
   padding: 2px 8px;
   border-radius: 3px;
   cursor: pointer;
+  user-select: none;
   font-size: var(--td-font-size-body-small);
   color: var(--td-text-primary);
   line-height: var(--td-line-height-body-small);
