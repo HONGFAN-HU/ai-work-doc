@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ai-work-doc": {
+      "command": "npm",
+      "args": ["--workspace=@ai-work-doc/server", "run", "mcp"],
+      "cwd": "D:/ai-work-doc"
+    }
+  }
+}

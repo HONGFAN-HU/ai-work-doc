@@ -1,6 +1,16 @@
 {
   "permissions": {
     "allow": [
+      "mcp__ai-work-doc__list_files",
+      "mcp__ai-work-doc__read_file",
+      "mcp__ai-work-doc__create_file",
+      "mcp__ai-work-doc__update_file",
+      "mcp__ai-work-doc__delete_file",
+      "mcp__ai-work-doc__rename_file",
+      "mcp__ai-work-doc__search_files",
+      "mcp__ai-work-doc__get_workspace",
+      "mcp__ai-work-doc__update_workspace",
+      "mcp__ai-work-doc__refresh_index",
       "mcp__notion__notion-search",
       "mcp__notion__notion-get-users",
       "mcp__notion__notion-fetch",

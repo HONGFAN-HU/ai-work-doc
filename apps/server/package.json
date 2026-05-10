@@ -1,24 +1,26 @@
 {
-    "name":  "@ai-work-doc/server",
-    "private":  true,
-    "version":  "0.1.0",
-    "type":  "module",
-    "scripts":  {
-                    "dev":  "tsx watch src/index.ts",
-                    "build":  "tsc -p tsconfig.json",
-                    "start":  "node dist/index.js",
-                    "lint":  "eslint src --ext .ts",
-                    "typecheck":  "tsc --noEmit"
-                },
-    "dependencies":  {
-                         "@ai-work-doc/shared":  "*",
-                         "@fastify/cors":  "^9.0.1",
-                         "@fastify/static":  "^7.0.4",
-                         "fastify":  "^4.28.1"
-                     },
-    "devDependencies":  {
-                            "tsx":  "^4.16.2",
-                            "typescript":  "^5.5.4",
-                            "@types/node":  "^22.10.1"
-                        }
+    "name": "@ai-work-doc/server",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "mcp": "tsx src/mcp.ts",
+        "build": "tsc -p tsconfig.json",
+        "start": "node dist/index.js",
+        "lint": "eslint src --ext .ts",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@ai-work-doc/shared": "*",
+        "@fastify/cors": "^9.0.1",
+        "@fastify/static": "^7.0.4",
+        "@modelcontextprotocol/sdk": "^1.29.0",
+        "fastify": "^4.28.1"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.1",
+        "tsx": "^4.16.2",
+        "typescript": "^5.5.4"
+    }
 }
