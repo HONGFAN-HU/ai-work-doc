@@ -297,6 +297,7 @@ body,
   padding: 2px 8px;
   border-radius: 3px;
   cursor: pointer;
+  user-select: none;
   font-size: var(--td-font-size-body-small);
   font-weight: 600;
   color: var(--td-text-primary);
@@ -351,6 +352,7 @@ body,
   line-height: var(--td-line-height-body-medium);
   white-space: nowrap;
   cursor: pointer;
+  user-select: none;
 }
 
 .breadcrumb-item:hover {
@@ -683,6 +685,7 @@ body,
   border-bottom: 1px solid var(--td-gray-divider);
   padding: 12px var(--td-comp-paddinglr-l);
   cursor: pointer;
+  user-select: none;
   align-items: center;
   transition: background-color 0.15s;
 }
