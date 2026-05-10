@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import type { WorkspaceConfig } from '@ai-work-doc/shared';
+import { initProject } from '../services/projectInit';
 
 const configDir = path.join(os.homedir(), '.ai-workdoc');
 const configPath = process.env.CONFIG_PATH || path.join(configDir, 'config.json');
@@ -21,7 +22,7 @@ export async function ensureConfig() {
     await fs.access(configPath);
   } catch {
     await fs.writeFile(configPath, JSON.stringify(defaultConfig, null, 2), 'utf8');
-    await fs.mkdir(defaultConfig.rootPath, { recursive: true });
+    await initProject(defaultConfig.rootPath);
   }
 }
 

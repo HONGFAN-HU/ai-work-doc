@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
 import { FastifyInstance } from 'fastify';
 import { readConfig, writeConfig } from '../config/workspace';
+import { initProject } from '../services/projectInit';
 
 function requestId() {
   return crypto.randomUUID();
@@ -38,7 +38,7 @@ export function registerWorkspaceRoutes(app: FastifyInstance) {
       }>;
       const next = await writeConfig(body);
       if (body.rootPath) {
-        await fs.mkdir(body.rootPath, { recursive: true });
+        await initProject(body.rootPath);
       }
       return { code: 0, message: 'ok', data: next, requestId: requestId() };
     },

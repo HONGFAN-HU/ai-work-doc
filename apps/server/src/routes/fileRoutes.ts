@@ -5,6 +5,7 @@ import { FastifyInstance } from 'fastify';
 import type { FileNode } from '@ai-work-doc/shared';
 import { readConfig } from '../config/workspace';
 import { readTree } from '../services/treeService';
+import { refreshIndex } from '../services/projectInit';
 import { isMarkdownFile, normalizeWorkspacePath } from '../utils/paths';
 
 function requestId() {
@@ -171,6 +172,18 @@ export function registerFileRoutes(app: FastifyInstance) {
         return reply.code(400).send(errorResponse(5002, error instanceof Error ? error.message : 'failed to delete file'));
       }
     },
+  });
+
+  app.post('/api/index/refresh', async (request, reply) => {
+    const config = await readConfig();
+    if (config.readOnly) {
+      return reply.code(403).send(errorResponse(4005, 'workspace is in read-only mode'));
+    }
+    if (!config.rootPath) {
+      return reply.code(400).send(errorResponse(4001, 'rootPath is not configured'));
+    }
+    await refreshIndex(config.rootPath);
+    return { code: 0, message: 'ok', data: { refreshed: true }, requestId: requestId() };
   });
 
   app.get('/api/search', {
