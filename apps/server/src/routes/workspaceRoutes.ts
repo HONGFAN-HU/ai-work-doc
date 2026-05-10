@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
 import { FastifyInstance } from 'fastify';
 import { readConfig, writeConfig } from '../config/workspace';
 
@@ -36,6 +37,9 @@ export function registerWorkspaceRoutes(app: FastifyInstance) {
         theme: 'light' | 'dark' | 'system';
       }>;
       const next = await writeConfig(body);
+      if (body.rootPath) {
+        await fs.mkdir(body.rootPath, { recursive: true });
+      }
       return { code: 0, message: 'ok', data: next, requestId: requestId() };
     },
   });
