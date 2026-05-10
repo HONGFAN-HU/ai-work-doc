@@ -42,5 +42,9 @@
       "mcp__plugin_figma_figma__generate_figma_design",
       "Bash(node -e \"const t = require\\('tdesign-react'\\); console.log\\('Breadcrumb' in t ? 'yes' : 'no'\\)\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "ai-work-doc"
+  ],
+  "enableAllProjectMcpServers": true
 }
