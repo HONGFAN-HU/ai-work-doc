@@ -343,6 +343,8 @@ body,
   align-items: center;
   gap: 4px;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  row-gap: 4px;
 }
 
 .breadcrumb-item {
@@ -376,6 +378,16 @@ body,
 .breadcrumb-separator svg {
   width: 16px;
   height: 16px;
+}
+
+/* Override TDesign truncation: allow full text display */
+.app-breadcrumb .t-breadcrumb--text-overflow .t-breadcrumb__inner {
+  max-width: none;
+}
+
+.app-breadcrumb .t-breadcrumb--text-overflow .t-breadcrumb__inner-text {
+  text-overflow: unset;
+  overflow: visible;
 }
 
 /* ---- Editor + Preview Area ---- */

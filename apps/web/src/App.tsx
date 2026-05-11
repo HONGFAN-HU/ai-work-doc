@@ -246,7 +246,7 @@ function App() {
           ) : (
             <>
               {currentPath && (
-                <Breadcrumb className="app-breadcrumb" options={breadcrumbOptions} />
+                <Breadcrumb className="app-breadcrumb" maxItemWidth="none" options={breadcrumbOptions} />
               )}
 
               <div className="editor-area">
