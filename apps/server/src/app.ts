@@ -4,6 +4,7 @@ import Fastify from 'fastify';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { registerDocsRoutes } from './routes/docsRoutes';
+import { registerEventsRoutes } from './routes/eventsRoutes';
 import { registerFileRoutes } from './routes/fileRoutes';
 import { registerWorkspaceRoutes } from './routes/workspaceRoutes';
 
@@ -47,6 +48,7 @@ export function createApp() {
   registerWorkspaceRoutes(app);
   registerFileRoutes(app);
   registerDocsRoutes(app);
+  registerEventsRoutes(app);
 
   return app;
 }

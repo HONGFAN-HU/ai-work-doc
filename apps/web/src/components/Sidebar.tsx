@@ -7,9 +7,9 @@ import { LogoSvg } from './LogoSvg';
 interface SidebarProps {
   tree: FileNode[];
   currentPath: string;
-  activeView: 'doclib' | 'editor';
+  activeView: 'doclib' | 'editor' | 'settings';
   readOnly: boolean;
-  onNavigate: (view: 'doclib' | 'editor') => void;
+  onNavigate: (view: 'doclib' | 'editor' | 'settings') => void;
   onOpen: (path: string) => void;
   onCloseCurrentFile: () => void;
   onCreate: () => void;

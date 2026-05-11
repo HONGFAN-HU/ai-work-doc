@@ -3,6 +3,7 @@ import path from 'node:path';
 import { createApp } from './app';
 import { readConfig } from './config/workspace';
 import { refreshIndex } from './services/projectInit';
+import { restartFileWatcher } from './services/fileWatchManager';
 
 const port = Number(process.env.PORT || 3001);
 const host = process.env.HOST || '127.0.0.1';
@@ -19,7 +20,11 @@ async function ensureIndexOnStartup() {
   }
 }
 
-Promise.all([ensureIndexOnStartup(), app.listen({ port, host })]).then(([,]) => {
+Promise.all([ensureIndexOnStartup(), app.listen({ port, host })]).then(async ([,]) => {
+  const config = await readConfig();
+  if (config.rootPath) {
+    restartFileWatcher(config.rootPath);
+  }
   app.log.info(`AI Work Doc server running at http://${host}:${port}`);
 }).catch((error) => {
   app.log.error(error);

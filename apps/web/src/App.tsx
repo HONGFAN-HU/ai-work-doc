@@ -14,7 +14,7 @@ import { OutlinePanel } from './components/OutlinePanel';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ErrorState } from './components/ErrorState';
 import { WelcomeState } from './components/WelcomeState';
-import { SettingsDialog } from './components/SettingsDialog';
+import { SettingsPanel } from './components/SettingsPanel';
 
 function App() {
   const { workspace, loading, error, saveWorkspace, fetchWorkspace } = useWorkspace();
@@ -24,10 +24,9 @@ function App() {
     openFile, createFile, renameFile, deleteFile, closeFile,
   } = useFileContent();
 
-  const [currentView, setCurrentView] = useState<'doclib' | 'editor'>('doclib');
+  const [currentView, setCurrentView] = useState<'doclib' | 'editor' | 'settings'>('doclib');
   const [previewPath, setPreviewPath] = useState('');
   const [previewContent, setPreviewContent] = useState('');
-  const [settingsVisible, setSettingsVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
   const [createParentPath, setCreateParentPath] = useState('');
   const [createName, setCreateName] = useState('');
@@ -58,7 +57,7 @@ function App() {
     if (res.data) {
       await fetchTree();
     }
-    setSettingsVisible(false);
+    setCurrentView('doclib');
   }, [saveWorkspace, fetchTree]);
 
   const handleOpenFile = useCallback((path: string) => {
@@ -66,7 +65,7 @@ function App() {
     setCurrentView('editor');
   }, [openFile]);
 
-  const handleNavigate = useCallback((view: 'doclib' | 'editor') => {
+  const handleNavigate = useCallback((view: 'doclib' | 'editor' | 'settings') => {
     setCurrentView(view);
     if (view === 'doclib') {
       setPreviewPath('');
@@ -213,7 +212,7 @@ function App() {
               setCreateDialogVisible(true);
             }}
             onRefresh={fetchTree}
-            onSettings={() => setSettingsVisible(true)}
+            onSettings={() => setCurrentView('settings')}
             onCloseCurrentFile={handleCloseCurrentFile}
           />
         </aside>
@@ -221,7 +220,13 @@ function App() {
         <div className="main-divider" />
 
         <div className="content-area">
-          {currentView === 'doclib' ? (
+          {currentView === 'settings' ? (
+            <SettingsPanel
+              workspace={workspace}
+              visible={true}
+              onSave={handleSettingsSave}
+            />
+          ) : currentView === 'doclib' ? (
             <div className="doc-lib-layout">
               <DocLibrary
                 tree={tree}
@@ -274,13 +279,6 @@ function App() {
           )}
         </div>
       </div>
-
-      <SettingsDialog
-        workspace={workspace}
-        visible={settingsVisible}
-        onClose={() => setSettingsVisible(false)}
-        onSave={handleSettingsSave}
-      />
 
       <Dialog
         header="New file"

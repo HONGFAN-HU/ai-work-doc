@@ -326,14 +326,14 @@ body,
   background: var(--td-gray-divider);
 }
 
-/* ---- Content Area (padding 32px matching Figma) ---- */
+/* ---- Content Area ---- */
 .content-area {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--td-comp-paddinglr-l);
-  padding: var(--td-comp-paddinglr-xxl);
+  padding: 20px;
   overflow: hidden;
 }
 
@@ -388,6 +388,61 @@ body,
 .app-breadcrumb .t-breadcrumb--text-overflow .t-breadcrumb__inner-text {
   text-overflow: unset;
   overflow: visible;
+}
+
+/* ---- Settings Panel ---- */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.settings-panel-header {
+  padding: 16px 20px 0;
+  flex-shrink: 0;
+}
+
+.settings-panel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--td-text-primary);
+}
+
+.settings-panel-body {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 480px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.settings-panel-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--td-gray-divider);
+  flex-shrink: 0;
+}
+
+[data-theme='dark'] .settings-panel {
+  background: #16213e;
+}
+
+[data-theme='dark'] .settings-panel-footer {
+  border-color: #0f3460;
 }
 
 /* ---- Editor + Preview Area ---- */
@@ -1275,7 +1330,7 @@ body,
   }
 
   .content-area {
-    padding: var(--td-comp-paddinglr-l);
+    padding: 12px;
   }
 }
 
