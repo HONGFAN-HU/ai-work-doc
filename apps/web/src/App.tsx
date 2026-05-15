@@ -238,6 +238,7 @@ function App() {
                   setCreateName('');
                   setCreateDialogVisible(true);
                 }}
+                onRefresh={fetchTree}
               />
               {previewPath && (
                 <DocPreviewPanel

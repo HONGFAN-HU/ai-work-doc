@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { registerDocsRoutes } from './routes/docsRoutes';
 import { registerEventsRoutes } from './routes/eventsRoutes';
 import { registerFileRoutes } from './routes/fileRoutes';
+import { registerOrganizeRoutes } from './routes/organizeRoutes';
 import { registerWorkspaceRoutes } from './routes/workspaceRoutes';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -47,6 +48,7 @@ export function createApp() {
 
   registerWorkspaceRoutes(app);
   registerFileRoutes(app);
+  registerOrganizeRoutes(app);
   registerDocsRoutes(app);
   registerEventsRoutes(app);
 

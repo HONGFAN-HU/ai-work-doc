@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Button } from 'tdesign-react';
-import { AddIcon, FolderIcon, FileIcon } from 'tdesign-icons-react';
+import { Button, Loading } from 'tdesign-react';
+import { AddIcon, FolderIcon, FileIcon, FolderOpenIcon } from 'tdesign-icons-react';
 import type { FileNode } from '@ai-work-doc/shared';
 
 interface DocLibraryProps {
@@ -9,10 +9,11 @@ interface DocLibraryProps {
   selectedPath: string;
   onPreview: (path: string) => void;
   onCreate: () => void;
+  onRefresh: () => void;
 }
 
 export function DocLibrary({
-  tree, loading, selectedPath, onPreview, onCreate,
+  tree, loading, selectedPath, onPreview, onCreate, onRefresh,
 }: DocLibraryProps) {
   const [collapsed, setCollapsed] = useState<Set<string>>(() => {
     const dirs = new Set<string>();
@@ -24,6 +25,33 @@ export function DocLibrary({
     collect(tree);
     return dirs;
   });
+
+  const [organizing, setOrganizing] = useState(false);
+  const [organizeResult, setOrganizeResult] = useState<string | null>(null);
+
+  const handleOrganize = async () => {
+    setOrganizing(true);
+    setOrganizeResult(null);
+    try {
+      const res = await fetch('/api/organize', { method: 'POST' });
+      const json = await res.json();
+      if (json.code === 0) {
+        const data = json.data as { moved: { from: string; to: string }[]; skipped: string[]; errors: string[] };
+        if (data.moved.length === 0) {
+          setOrganizeResult('文件已整理完毕，无需移动。');
+        } else {
+          setOrganizeResult(`整理完成，共移动 ${data.moved.length} 个文件。`);
+        }
+        onRefresh();
+      } else {
+        setOrganizeResult(`整理失败：${json.message}`);
+      }
+    } catch {
+      setOrganizeResult('整理失败，请检查网络连接。');
+    } finally {
+      setOrganizing(false);
+    }
+  };
 
   const toggleCollapse = (p: string) => {
     setCollapsed((prev) => {
@@ -94,10 +122,28 @@ export function DocLibrary({
     <div className="doc-library">
       <div className="doc-library-header">
         <h2 className="doc-library-title">文档库</h2>
-        <Button theme="primary" icon={<AddIcon />} onClick={onCreate}>
-          新建文档
-        </Button>
+        <div className="doc-library-header-actions">
+          <Button theme="default" icon={<FolderOpenIcon />} onClick={handleOrganize} loading={organizing}>
+            整理文件
+          </Button>
+          <Button theme="primary" icon={<AddIcon />} onClick={onCreate}>
+            新建文档
+          </Button>
+        </div>
       </div>
+
+      {organizeResult && (
+        <div className="doc-library-organize-result">
+          <span>{organizeResult}</span>
+          <button className="doc-library-organize-close" onClick={() => setOrganizeResult(null)}>x</button>
+        </div>
+      )}
+
+      {organizing && (
+        <div className="doc-library-organizing-overlay">
+          <Loading text="正在整理文件..." size="small" />
+        </div>
+      )}
 
       <div className="doc-library-table-wrap">
         <div className="doc-library-header-row">
